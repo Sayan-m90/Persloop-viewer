@@ -1,0 +1,179 @@
+/*****************************************************************************/
+"Persloop" software for computing persistent 1-cycle
+/*****************************************************************************/
+
+"Persloop" software is developed by the Jyamiti research group headed by 
+Prof. Tamal K. Dey at the Department of Computer Science and Engineering 
+of The Ohio State University.
+
+The binaries are distributed for: Ubuntu Linux 64bit;
+
+=================================
+DESCRIPTION
+=================================
+
+Our software PersLoop: Given a barcode file, and a filtration file from the raw input, generates the persistent 1-cycle for the barcodes.
+It implements Algorithm 3 of the following paper:
+	* Paper: T. K. Dey, T. Hao, S. Mandal
+		Persistent 1-Cycles: Definition, Computation, and Its Application
+		(CTIC 2018)
+
+=================================
+USAGE
+=================================
+-------------------------------------------------------------------------------
+./persloop -s <barcode_filename> -f <filtration_filename> [-options]
+-------------------------------------------------------------------------------
+
+SimBa Usage:
+  -h				Help information;
+
+  -l				License information;
+
+  -s arg			Simpers Barcode file name;
+
+  -f arg			filtration file name;
+
+
+=================================
+INPUT PARAMETERS:
+=================================
+
+<simpers_barcode_file>       	: input barcodes file in the following format:
+				/////////////////
+				#dimension birth-time death-time
+				dim_1 b_1 ... d_1 #barcode dimension, birth time and death time of first bar
+				 ...
+				dim_n b_n ... d_n #barcode dimension, birth time and death time of last bar
+				/////////////////
+				Example: the following file contains 2 points in R^3
+				*****************
+				* 0 0  10	*
+				* 0 20 50	*
+				* 1 30 100	*
+				* 2 2 inf	*
+				*****************
+
+Note: 0-cyles and 2-cycles will be ignored
+
+
+<filtration_file>       	: input filtration file in the following format:
+				/////////////////
+				#Line1 : dimension_of_input_points no_of_points(p')
+				#Line2 - Line_p': coordinates of p' points
+				#Lin_p'+1 - EOF: filtration
+				Filtration from line Lin_p'+1 need to be of the following format:
+We follow elementary insertions each simplicial map and different simplicial maps' operations are separated by "#".
+							Each line contains:
+
+							an insertion:
+							i v_1 v_2 ... v_n
+							(v_1 v_2 ... v_n are vertices of the inserted simplex sorted in increasing order)
+							Or a delimiter "#" with the time (scale) of current simplicial map used as 
+							birth/death time in the persistence
+							
+							Notice:
+							1. user has to make sure that all faces of a simplex are inserted before 
+							the insertion of the simplex
+							2. in elementary mode user cannot change the incidies of vertices, namely the indicies
+							have to be consistent among all simplicial maps
+							3. All vertices are assumed to have been inserted so start from time index p'+1 to start inserting the edges and traingles ( Note: tetrhedrons do not matter as we are dealing with 1-cycle)
+
+							Example:  suppose we want to insert 3 points and connect them in our filtration
+							*****************
+							3 3
+							1 1 1
+							2 3 5
+							0 4 2
+							# 3
+							i 0 1
+							# 4
+							i 1 2
+							# 5
+							i 0 2
+							# 6
+							i 0 1 2
+							# 7
+							*****************
+
+Explanation: Line 1: 3-dim, 3 points
+Line 2-4: 3 points inserted
+Line 4: start from timestamp p'+1: 3(count starts from 0)
+Line 5: insert first edge and so on
+For more details on -s and -f see Elementary mode operation of Simpers
+
+
+		
+
+=================================
+OUTPUT FILES:
+=================================
+
+"persloop" produces off files containing 1-cycle for each bar in the barcode.
+
+To visualise, either use the MATLAB script, which gives interactivity with the barcodes and works both for images and meshes in 3D, or regular softwares like Meshlab
+
+=================================
+EXAMPLE
+=================================
+
+A sample input simpers file "botijo_002_pers",  and filtration file "botijo_002f.txt" is provided in the folder "persloop-Example"
+which, given 8919 points sampled from the surface of a botijo and barcode generated from its filtration using simpers, gives the corresponding loops in the figure.
+
+Run the following command:
+
+Complete command:
+	./persloop -s botijo_002_pers -f botijo_002f.txt
+
+
+Output loops are stored in the folder "botijo_002floops/"
+We prefer the format f.txt for filtration files and _pers for simpers and store resulting loops in the folder floops/
+
+=================================
+LEGAL TERMS
+=================================
+
+THIS SOFTWARE IS PROVIDED "AS-IS". THERE IS NO WARRANTY OF ANY KIND. 
+NEITHER THE AUTHORS NOR THE OHIO STATE UNIVERSITY WILL BE LIABLE FOR 
+ANY DAMAGES OF ANY KIND, EVEN IF ADVISED OF SUCH POSSIBILITY.
+
+This software was developed (and is copyrighted by) the Jyamiti group at 
+The Ohio State University. Please do not redistribute this software. 
+This program is for academic research use only. This software uses the  
+Boost library (www.boost.org) and Ann library
+(www.cs.umd.edu/~mount/ANN/) which are covered under their own licenses.
+
+ 
+---------------------------------------------------------------------------
+
+The Boost library's license 
+(which applies to the Boost library ONLY and NOT to this program itself) is 
+as follows:
+
+LICENSE
+---------------------------------------------------------------------------
+Boost Software License - Version 1.0 - August 17th, 2003
+
+Permission is hereby granted, free of charge, to any person or organization
+obtaining a copy of the software and accompanying documentation covered by
+this license (the "Software") to use, reproduce, display, distribute,
+execute, and transmit the Software, and to prepare derivative works of the
+Software, and to permit third-parties to whom the Software is furnished to
+do so, all subject to the following:
+
+The copyright notices in the Software and this entire statement, including
+the above license grant, this restriction and the following disclaimer,
+must be included in all copies of the Software, in whole or in part, and
+all derivative works of the Software, unless such copies or derivative
+works are solely in the form of machine-executable object code generated by
+a source language processor.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO EVENT
+SHALL THE COPYRIGHT HOLDERS OR ANYONE DISTRIBUTING THE SOFTWARE BE LIABLE
+FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+---------------------------------------------------------------------------
+

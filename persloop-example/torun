@@ -1,0 +1,3 @@
+To run on this example:
+On command prompt/ terminal:
+./persloop -f genus3_r_200f.txt -s genus3_r_200_pers
