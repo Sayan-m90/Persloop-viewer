@@ -51,7 +51,6 @@
 using namespace boost;
 using namespace std;
 namespace bg = boost::geometry;
-
 typedef std::vector<std::vector<int>> higherOrder;
 typedef std::vector<std::vector<std::vector<float>>> higherPoint;
 
@@ -166,7 +165,7 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         exit(0);
     }
 
-    float dim, fborn;
+    int dim, fborn;
     std::string fdead;
     int count=0;
     while(!ff.eof()){
@@ -176,7 +175,6 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
       if(sLine==""||strlen(sLine)==0)
         return 0;
       // cout<<sLine<<",,,, "<<"\n";
-      // getchar();
       stringstream ss;
       ss.str(sLine);
       
@@ -186,12 +184,10 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         continue;
       if(dim==2)
         return 0;
-      born.push_back(int(fborn));
-      // cout<<(fborn*10)<<" bd "<<(stof(fdead)*10)<<"|";
-      // getchar();
+      born.push_back(fborn);
+      // cout<<fborn<<"fb "<<fdead<<"|";
       if(fdead == "inf")
         dead.push_back(-1);
-
       else
           dead.push_back(stoi(fdead));
 
@@ -214,16 +210,13 @@ void loopPrintingSingle(std::map<int,higherPoint> vloopH, int birthtime, std::st
     int count = 0;
     // higherPoint vloop = vloop.begin()->second;
   // {
-    std::string file = loops_folder+std::to_string(birthtime)+"comb.off";
+    std::string file = loops_folder+std::to_string(birthtime)+".off";
     cout<<"OFF folder:"<<file<<"\n";
     ofstream ofloop(file.c_str());
     int vertexcount = 0, edgecount = 0, edgecountfirst = 0, fi=0;
-    std::vector<int> thisLoopind;
 
   for(std::map<int,higherPoint>::iterator iter = vloopH.begin(); iter != vloopH.end(); ++iter)
   {
-    // if (iter->first!=birthtime)
-      // continue;
     higherPoint here = iter->second;
 
     // printHigherPoint(here);
@@ -235,39 +228,35 @@ void loopPrintingSingle(std::map<int,higherPoint> vloopH, int birthtime, std::st
     // fi++;
   }
     
-  ofloop<<"OFF"<<std::endl<<(edgecount*3)<<" "<<edgecount<<" 0\n";    
+  ofloop<<"OFF"<<std::endl<<(edgecount*4)<<" "<<edgecount<<" 0\n";    
 
   for(std::map<int,higherPoint>::iterator iter = vloopH.begin(); iter != vloopH.end(); ++iter)
   {
-    // if (iter->first!=birthtime)
-      // continue;
     higherPoint vloop_local = iter->second;
     for(int l2=0;l2<vloop_local.size();l2++){
     ofloop<<vloop_local[l2][0][0]<<" "<<vloop_local[l2][0][1]<<" "<<vloop_local[l2][0][2]<<"\n";
     ofloop<<vloop_local[l2][1][0]<<" "<<vloop_local[l2][1][1]<<" "<<vloop_local[l2][1][2]<<"\n";
-    ofloop<<(vloop_local[l2][0][0]+1)<<" "<<(vloop_local[l2][0][1]+1)<<" "<<(vloop_local[l2][0][2]+1)<<"\n";
-    // ofloop<<vloop_local[l2][1][0]<<" "<<vloop_local[l2][1][1]<<" "<<vloop_local[l2][1][2]<<"\n";
+    ofloop<<vloop_local[l2][0][0]<<" "<<vloop_local[l2][0][1]<<" "<<vloop_local[l2][0][2]<<"\n";
+    ofloop<<vloop_local[l2][1][0]<<" "<<vloop_local[l2][1][1]<<" "<<vloop_local[l2][1][2]<<"\n";
 
-    edge.push_back(count++);    edge.push_back(count++);    edge.push_back(count++);
+    edge.push_back(count++);
+    edge.push_back(count++);
+    edge.push_back(count++);
+    edge.push_back(count++);
     vInd.push_back(edge);
     edge.clear();
-    
-
-    if (iter->first==birthtime)
-      thisLoopind.push_back(fi);
-    // if(iter->first==birthtime)  //first cycle that was born actually
-    //   {fi++;}
-    fi++;
+    if(iter==vloopH.begin())  //first cycle that was born actually
+      fi++;
 
     }
   } 
 
   for(int ed=0;ed<vInd.size();ed++)
     {
-      if(std::find(thisLoopind.begin(), thisLoopind.end(), ed) != thisLoopind.end())//to make first cycle a different color
-        ofloop<<"3 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" 1.0 0.5 0.0"<<std::endl;//
+      if(ed<fi)//to make first cycle a different color
+        ofloop<<"4 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" "<<vInd[ed][3]<<" 1.0 1.0 0.0"<<std::endl;
       else
-        ofloop<<"3 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" 1.0 1.0 0.0"<<std::endl;//
+        ofloop<<"4 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" "<<vInd[ed][3]<<" 1.0 1.0 0.0"<<std::endl;
     }
     ofloop.close();
 
@@ -291,8 +280,6 @@ void loopPrinting( std::map<int,higherPoint> vloop_all, std::string filtration_f
     int k =  iter->first;
     higherPoint vloop = iter->second;
   // {
-    // if(vloop.size()<=5)
-      // return;
     std::string file = loops_folder+std::to_string(k)+".off";
     cout<<"OFF folder:"<<file<<"\n";
     ofstream ofloop(file.c_str());
@@ -435,46 +422,28 @@ int main(int argc, char *argv[] )
         // ******************** DEAD PART *********************
         if(itf != vdead.end() ){
 
-          // cout<<"Short Loop Dead:sL:"<<sLine<<" ..\n"; 
-          // getchar();
+          cout<<"Pers Loop Dead:sL:"<<sLine<<"\n"; 
           
           int index = std::distance(vdead.begin(), itf);
-          // cout<<"ind:"<<index;
-          // getchar();
           int lid = vborn[index]; //loop_index_which_died
-          // cout<<"lid"<<vborn[index];
-          // getchar();
-          // cout<<"Loop born at: "<<vborn[index]<<", died at: "<<vdead[index]<<"Loop Size:"<<birthOfLoops.size()<<"\n";
-          // getchar();
+          cout<<"Loop born at: "<<vborn[index]<<", died at: "<<vdead[index]<<"\n";
           higherOrder lwd = birthOfLoops[lid]; // actual loop which died
           // cout<<"Actual loop death: ";
           // printHigherOrder(lwd);
-          // cout<<"0";
-          // getchar();
-          map<int,higherOrder> ref;
-          if (vdead[index] == -1)
-          {
-          	ref.insert(std::pair<int, higherOrder>(lid, lwd));
-          }
-          else
-          	ref.insert(std::pair<int, higherOrder>(lid, lwd));
-          // cout<<"0.0";
-          // getchar();
-	          // ref = deathTracker(lwd, lid, birthOfLoops);
-
+          // cout<<"\n";
+          map<int,higherOrder> ref = deathTracker(lwd, lid, birthOfLoops);;
+          ref.insert(std::pair<int, higherOrder>(lid, lwd));//
           map<int,higherPoint> vCombDead;
           
           bool multiple = false;
-          // cout<<"Constituent loops: "<<lid<<" ";
           for(map<int,higherOrder>::iterator itref = ref.begin();itref!=ref.end();itref++){
             higherPoint loopbornnowCoord;
             
             higherOrder ho = itref->second;     //one cycle
-              cout<<itref->first<<" || ";
+              // cout<<"Birth: "<<itref->first<<" || ";
 
             // printHigherOrder(ho);
-            // cout<<"1.";
-              // getchar();
+            // cout<<"\n";
             for(int ho_ind=0; ho_ind < ho.size(); ho_ind++)   //through each edge of the cycle
             {
               vector<float> buffpointloop;
@@ -482,7 +451,7 @@ int main(int argc, char *argv[] )
 
               if(ho[ho_ind].size()!=2)
               {
-                cout<<"Edge(Ho) size not 2. Error"; exit(0);
+                cout<<"Ho size not 2. Error"; exit(0);
               }
               int li1 = ho[ho_ind][0]; //two vertices of participant edge in a cycle
               int li2 = ho[ho_ind][1];
@@ -500,26 +469,23 @@ int main(int argc, char *argv[] )
               loopbornnowCoord.push_back(buffpointloop2);
               buffpointloop2.clear();
             }
-            // cout<<"2.";
-            // getchar();
-
             vCombDead[itref->first] = loopbornnowCoord;  
             if(itref!=ref.begin())
               multiple = true;
             loopbornnowCoord.clear();
 
           }
+
+          lwd = modifylastloop(lwd);
+          cout<<"Loop born at: "<<vborn[index]<<", died at: "<<vdead[index]<<"\n";
+          // printHigherOrder(lwd);
           birthOfLoops.erase(lid);
-          // loopPrintingSingle(vCombDead, lid, filtration_file);
-          // if(multiple == true)
-            // exit(0);
-          // getchar();
           continue;
         
         }
         // ******************* BORN PART ************************
         else if (std::find(vborn.begin(), vborn.end(), indf) != vborn.end()){
-            cout<<sLine<<" Start of born part"<< v1EdgeFilt.size()<<"\n";
+            // cout<<sLine<<" Start of born part"<< v1EdgeFilt.size()<<"\n";
           typedef adjacency_list < listS, vecS, directedS,
             no_property, property < edge_weight_t, int > > graph_t;
           typedef graph_traits < graph_t >::vertex_descriptor vertex_descriptor;
@@ -529,19 +495,11 @@ int main(int argc, char *argv[] )
 
             int sizehere = v1EdgeFilt.size();
                Graph g;
+               generic_counter = 0;
             v1EdgeFilt.erase(v1EdgeFilt.begin()+v1EdgeFilt.size()-1);
             v2EdgeFilt.erase(v2EdgeFilt.begin()+v2EdgeFilt.size()-1);
 
-            vector<int>::iterator ib = v1EdgeFilt.begin();
-            vector<int>::iterator id = v2EdgeFilt.begin();
             
-            generic_counter = 0;
-            for(; ib!=v1EdgeFilt.end(); ib++,id++){
-
-              g.add_vertex(*ib, *id, boost::geometry::distance(vPoint[*ib],vPoint[*id]));
-              g.add_vertex(*id, *ib, boost::geometry::distance(vPoint[*id],vPoint[*ib]));
-
-            }
             
             higherOrder loopbornnow;
             higherPoint loopbornnowCoord;
@@ -550,8 +508,19 @@ int main(int argc, char *argv[] )
             vector<vector<float>> buffpointloop2;
 
             // *********************** Create shortest path METHOD 1  *************************//
-            if(v1EdgeFilt.size()>300000){
+            if(v1EdgeFilt.size()>300000){//{
             int count=0;
+            vector<int>::iterator ib = v1EdgeFilt.begin();
+            vector<int>::iterator id = v2EdgeFilt.begin();
+            
+            
+            for(; ib!=v1EdgeFilt.end(); ib++,id++){
+
+              g.add_vertex(*ib, *id, boost::geometry::distance(vPoint[*ib],vPoint[*id]));
+              g.add_vertex(*id, *ib, boost::geometry::distance(vPoint[*id],vPoint[*ib]));
+
+            }
+
             vector<int> vertt = g.shortest_path(li1, li2);
 
             for (int ii=0;ii<vertt.size()-1;ii++)
@@ -577,22 +546,24 @@ int main(int argc, char *argv[] )
               buffpointloop2.clear();
 
             }
-              buffloop.push_back(vertt[0]);
               buffloop.push_back(vertt[vertt.size()-1]);
+              buffloop.push_back(li1);
               loopbornnow.push_back(buffloop);
               
-              buffpointloop.push_back(vPoint[0].get<0>()); 
-              buffpointloop.push_back(vPoint[0].get<1>()); 
-              buffpointloop.push_back(vPoint[0].get<2>());
-              buffpointloop2.push_back(buffpointloop);
-
-              buffpointloop.clear();
               buffpointloop.push_back(vPoint[vertt.size()-1].get<0>()); 
               buffpointloop.push_back(vPoint[vertt.size()-1].get<1>()); 
               buffpointloop.push_back(vPoint[vertt.size()-1].get<2>());
               buffpointloop2.push_back(buffpointloop);
+
+              buffpointloop.clear();
+              buffpointloop.push_back(vPoint[li1].get<0>()); 
+              buffpointloop.push_back(vPoint[li1].get<1>()); 
+              buffpointloop.push_back(vPoint[li1].get<2>());
+              buffpointloop2.push_back(buffpointloop);
               
               loopbornnowCoord.push_back(buffpointloop2);
+              // cout<<"vert: "<<vertt[vertt.size()-1]<<","<<vertt[0]<<endl;
+              // getchar();
               buffloop.clear();
               buffpointloop.clear();
               buffpointloop2.clear();  
@@ -646,18 +617,21 @@ int main(int argc, char *argv[] )
 
             vi = vi + li2;
             vj = vj + li1;
-            higherOrder loopbornnow;
-            higherPoint loopbornnowCoord;
+            // higherOrder loopbornnow;
+            // higherPoint loopbornnowCoord;
             vector<int> buffloop;
             vector<float> buffpointloop;
             vector<vector<float>> buffpointloop2;
             int count=0;
             while(*vi != *vj){
 
- // cout<<"\ngot here 6.1 "<<*vi<<","<<*vj<<" pred:  "<<pred[*vi]<<","<<pred[*vj];  getchar(); count++;
-            
               buffloop.push_back(*vi);
               buffloop.push_back(pred[*vi]);
+              if(*vi==pred[*vi])
+              {
+                cout<<"Wrong graph construction"<<endl;
+                exit(0);
+              }
               loopbornnow.push_back(buffloop);
               
               buffpointloop.push_back(vPoint[*vi].get<0>()); 
@@ -675,6 +649,8 @@ int main(int argc, char *argv[] )
               buffloop.clear();
               buffpointloop.clear();
               buffpointloop2.clear();
+
+
               // cout<<*vi<<" "<<li1<<" "<<li2<<" "<<*vj<<" pv: "<<pred[*vi]<<" pv: "<<pred[*vj]<<"--";
               // getchar();
               vi = vs + pred[*vi];
@@ -702,22 +678,22 @@ int main(int argc, char *argv[] )
             buffpointloop.clear();
             buffpointloop2.clear();
             //***********************************************************
-
             birthOfLoops.insert(std::pair<int, higherOrder>(indf, loopbornnow));
             birthOfLoopCoordinates.insert(std::pair<int, higherPoint>(indf, loopbornnowCoord));
             v1EdgeFilt.push_back(li1);
             v2EdgeFilt.push_back(li2);
             currentEdgeSize++;
+
             if(sizehere!=v1EdgeFilt.size())
               {cout<<"mismatch "<<sizehere<<" "<<v1EdgeFilt.size(); exit(0);}
             // *********************** END Create shortest path BOOST *************************//
             continue;
         }
+
         else continue;
       }// end of #
       
-      // cout<<"gothere"<<sLine<<endl;
-      // getchar();     
+      
       ss.str(sLine);
       char ch;
       int index;
@@ -761,6 +737,7 @@ int main(int argc, char *argv[] )
   
   // cout<<"birthOfLoopCoordinates size:"<<birthOfLoopCoordinates.size();
   loopPrinting( birthOfLoopCoordinates, filtration_file);
+
 
   return EXIT_SUCCESS;
 }

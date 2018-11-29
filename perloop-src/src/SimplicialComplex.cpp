@@ -1,5 +1,5 @@
 /*
-(c) 2015 Fengtao Fan, Dayu Shi
+(c) 2015 Fengtao Fan, Dayu Shi, Sayan Mandal
 */
 #include "SimplicialComplex.h"
 #include <fstream>
@@ -33,7 +33,7 @@ double dCollapseTime;
 
 // outer vector: loop, inner vector: edges forming the loop
 typedef std::vector<std::vector<int>> higherOrder;
-// int findRoot(int a);
+
 
 void WritePersistence(const char* pFileName, vector<unordered_set<int> > &homo_info) {
 	std::ofstream ofile;
@@ -133,7 +133,7 @@ void ComputingPersistenceForSimplicialMapElementary(vector<vector<int> > simplex
 	// cout<<domain_complex.ComplexSize();
 	if (filtration_step == 0)
 	{
-		if (file_name_of_domain_complex != '\0')
+		if (file_name_of_domain_complex[0] != '\0')
 		{
 			if (is_domain_complex_with_annotation) {
 				domain_complex.ReadComplexWithAnnotation(file_name_of_domain_complex);
@@ -181,110 +181,49 @@ void ComputingPersistenceForSimplicialMapElementary(vector<vector<int> > simplex
 }
 
 
-ListNodePtr AddBoundary(std::vector<std::vector<int>> simplex_vertices, std::vector<int> vPointMap, SimplicialTree<bool> domain_complex){
+ListNodePtr AddBoundary(std::vector<std::vector<int>> simplex_vertices){
 // For each cycle
 // outer vector: stores edges
 	vector<SimplicialTreeNode_ptr> cyclic_edges;	
-		cout<<"got here as well 1 ("<<simplex_vertices[0][0]<<","<<simplex_vertices[0][1]<<")(";
-		cout<<vPointMap[simplex_vertices[0][0]]<<","<<vPointMap[simplex_vertices[0][1]]<<")\n";	
+	
 	int sizes = 1;
 
 	for(int i=0;i<simplex_vertices.size();i++){
-		for(int j=0;j<simplex_vertices[i].size();j++){
-			simplex_vertices[i][0] = domain_complex.findRoot(simplex_vertices[i][0]);
-			simplex_vertices[i][1] = domain_complex.findRoot(simplex_vertices[i][1]);
-			// int idx = simplex_vertices[i][0];
-			// while(vPointMap[idx]!=idx)
-			// 	idx = vPointMap[idx];
-			// int ibx = simplex_vertices[i][1];
-			// while(vPointMap[ibx]!=ibx)
-			// 	ibx = vPointMap[ibx];
-			// if(idx==ibx)
-			// 	simplex_vertices.erase(simplex_vertices.begin()+i);
-
-					// cout<<simplex_vertices[i][j]<<" ";
-			// while(vPointMap[simplex_vertices[i][0]] != simplex_vertices[i][0])
-				// simplex_vertices[i][0] = vPointMap[simplex_vertices[i][0]];
-			// while(vPointMap[simplex_vertices[i][1]] != simplex_vertices[i][1])
-				// simplex_vertices[i][1] = vPointMap[simplex_vertices[i][1]];
-			
-			// if(simplex_vertices[i][0] == simplex_vertices[i][1])
-				// {
-					// simplex_vertices.erase(simplex_vertices.begin() + i);
-					// continue;
-				// }
-			if(simplex_vertices[i][0] > simplex_vertices[i][1]){
-				int temp = simplex_vertices[i][0];
-				simplex_vertices[i][0] = simplex_vertices[i][1];
-				simplex_vertices[i][1] = temp;
-			}
+		for(int j=0;j<simplex_vertices[i].size();j++)
+			// cout<<simplex_vertices[i][j]<<" ";
+		if(simplex_vertices[i][0]>simplex_vertices[i][1]){
+			int temp = simplex_vertices[i][0];
+			simplex_vertices[i][0] = simplex_vertices[i][1];
+			simplex_vertices[i][1] = temp;
 		}
 		// simplex_vertices
 		// cout<<"|";
 	}
-	// if(simplex_vertices[0][0]==8830 && simplex_vertices[0][1]==8838 )
-		// simplex_vertices[0][1] = 8832;
 	// cout<<"got here as well";
 	// getchar();
 	// cout<<"Loop Sum:\n";
-	int i=0;
-	// bool emptyFlag = false;
+
 	SimplicialTreeNode_ptr simplex ;
-
-	do{
-
-	// emptyFlag = false;
-	simplex = domain_complex.find(simplex_vertices[i]);	//get one edge
-
-		cout<<"i val ("<<simplex_vertices[i][0]<<","<<simplex_vertices[i][1]<<") "<<i<<" "<<simplex_vertices.size()<<"\n";
-		i++;
-	}while(simplex==NULL && i<simplex_vertices.size());
-	
-		// cout<<vPointMap[simplex_vertices[0][0]]<<","<<vPointMap[simplex_vertices[0][1]]<<")";
-// getchar();
-	// if(simplex!=NULL)//->index_in_filtration)
-		cout<<"inside print";
+	simplex = domain_complex.find(simplex_vertices.at(0));	//get one edge
+		// cout<<"got here as well 2";
 	// getchar();
-	if(i==simplex_vertices.size())
-		{cout<<"inside print2";
-		// getchar();
-		// ListNodePtr p = domain_complex.find_annotation(simplex);
-		// cout<<"inside print3";
-		// getchar();
-			ListNodePtr sum;
-			// sum->next=sum;
-			return sum;
-		}
-			// cout<<"print"<<simplex->index_in_filtration;
-		// getchar();
 	ListNodePtr p = domain_complex.find_annotation(simplex);
-
-ListNodePtr sum = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
-	int dead_bit = -1;
-// }
-cout<<"out of it all\n";
-// getchar();
-// 	// getchar();
-	
-// 		cout<<"got here as well 3";
-// 	getchar();
-	
-// 			cout<<"got here as well 4";
-// 	getchar();
-	// simplex.clear();
-	for(;i<simplex_vertices.size();i++){
-		// emptyFlag= false;
-	// SimplicialTreeNode_ptr simplex ;
-	cout<<"got here iter: "<<simplex_vertices[i][0]<<","<<simplex_vertices[i][1]<<"|"<<i<<endl;
-	// cout<<domain_complex.findRoot(simplex_vertices[i][0])<<","<<domain_complex.findRoot(simplex_vertices[i][1])<<endl;
+		// cout<<"got here as well 3";
 	// getchar();
-	simplex = domain_complex.find(simplex_vertices[i]);	//get one edge
-	if(simplex==NULL)
-		continue;
-	// cout<<"got here iter 2.";
+	ListNodePtr sum = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
+	int dead_bit = -1;
+			// cout<<"got here as well 4";
+	// getchar();
+	// simplex.clear();
+	for(int i=1;i<simplex_vertices.size();i++){
+	// SimplicialTreeNode_ptr simplex ;
+	// cout<<"got here iter";
+	// getchar();
+	simplex = domain_complex.find(simplex_vertices.at(i));	//get one edge
+	// cout<<"got here iter 2";
 	// getchar();
 	ListNodePtr tempLNP = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
-	cout<<"got here iter 3.";
+	// cout<<"got here iter 3";
 	// getchar();
 	dead_bit = domain_complex.annotations[sizes]->sum_two_annotation_with_changed_dst(sum, tempLNP);
 	}
@@ -307,8 +246,6 @@ cout<<"out of it all\n";
 
 int LowReturner(ListNodePtr sum){
 
-	if(sum->next==sum)
-		return sum->row;
 	ListNodePtr trav(sum->next);
 
 	while (trav != sum) {
@@ -322,157 +259,82 @@ int LowReturner(ListNodePtr sum){
 
 //input: vector of vector: cycle indices: 
 //output: the low of the annotation of the cycle
-// int lowfromHigherOrder(higherOrder &simplex_vertices){
+int lowfromHigherOrder(higherOrder &simplex_vertices){
 	
-// 	SimplicialTreeNode_ptr simplex ;
-// 	int sizes = 1;
-// 	simplex = domain_complex.find(simplex_vertices.at(0));	//get one edge
-// 	ListNodePtr p = domain_complex.find_annotation(simplex);
-// 	ListNodePtr sum = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
-// 	int dead_bit = -1;
-// 	// simplex.clear();
-// 	for(int i=1;i<simplex_vertices.size();i++){
-// 	// SimplicialTreeNode_ptr simplex ;
-// 	simplex = domain_complex.find(simplex_vertices.at(i));	//get one edge
-// 	ListNodePtr tempLNP = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
-// 	dead_bit = domain_complex.annotations[sizes]->sum_two_annotation_with_changed_dst(sum, tempLNP);
-// 	}
-// 	int num=0;
-// 	ListNodePtr trav(sum->next);
-// 	while (trav != sum) {
-// 		num += pow(2,(trav->row));
-// 		// cout<<"row: "<<trav->row<<" ";
-// 	if(trav->next==sum)
-// 		{
-// 			// cout<<"\n num: "<<num; 
-// 			return num;
-// 		}
-// 		trav = trav->next;
-// 	}
-// 	return -1;
-	
-// }
-
-// void CheckBoundaryBirthOfLoops(std::map<int, higherOrder> birthOfLoops){
-// 	std::map<int, higherOrder>::iterator itbl;
-// 	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
-// 		ListNodePtr inter = AddBoundary(itbl->second);
-// 		if(inter->next==inter){
-// 			std::cout<<"Cycle in original complex shouldn't have died here."<<itbl->first<<"\n";
-// 			higherOrder buff = itbl->second;
-// 			for(int ind=0;ind<buff.size();ind++){
-// 				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"<->";
-// 			}
-// 			exit(0);
-// 		}
-// 	}
-
-// }
-
-//takes the loop, if its annotation is zero, it has dies. if not, then a combination has dies. Find which combination is dead.
-std::map<int,higherOrder> deathTracker(higherOrder thisLoop,  int birthTimethisLoop, std::vector<int> vPointMap, std::map<int, higherOrder> birthOfLoops, SimplicialTree<bool> domain_complex){
-
-	std::vector<ListNodePtr> listofLoops;
-	std::map<int, higherOrder>::iterator itbl;
-	// std::map<int, higherOrder>::iterator ithr;
-	std::map<int, higherOrder> vloop;
+	SimplicialTreeNode_ptr simplex ;
 	int sizes = 1;
-	int dead_bit = 0;
-	std::map<int, higherOrder> reducedLoops; //will contain vertices mapped under collapse
-	// reducedLoops.insert(birthOfLoops.begin(), birthOfLoops.end());;
-	// cout<<"got here in search of death";
-	// getchar();
-
-	ListNodePtr newloop = AddBoundary(thisLoop, vPointMap, domain_complex);
-	cout<<"got here in search of death as well";
-	// getchar();
-		// cout<<"got here";
-	// getchar();
-	if(newloop==NULL || newloop->next==newloop){
-			std::cout<<"Cycle dead. No combination required"<<"\n";
-			// getchar();
-			vloop.insert(std::pair<int, higherOrder>(birthTimethisLoop, thisLoop));
-			return vloop;
-		}
-		//*********** Check to see if loop 
-	// for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
-	// 	higherOrder buffLoop = itbl->second;
-	// 	higherOrder innerLoop;
-	// 	std::vector<int> buffedge;
-	// 	for(int ind=0;ind< buffLoop.size();ind++){
-	// 		int indloop0 = buffLoop[ind][0];
-	// 		int indloop1 = buffLoop[ind][1];
-	// 		if (vPointMap[indloop0] == indloop0)//This vertex has not been collapsed
-	// 			buffedge.push_back(indloop0);
-	// 		else{								//Push whatever this vertex is collapsed to
-	// 			while(vPointMap[indloop0]!=indloop0)
-	// 				indloop0 = vPointMap[indloop0];
-	// 			buffedge.push_back(indloop0);
-
-	// 		}
-
-	// 		// if (vPointMap[indloop1] == indloop1)//This vertex has not been collapsed
-	// 			// buffedge.push_back(indloop1);
-	// 		// else{								//Push whatever this vertex is collapsed to
-	// 			// while(vPointMap[indloop1]!=indloop1)
-	// 				// indloop1 = vPointMap[indloop1];
-	// 			// buffedge.push_back(indloop1);
-	// 		// }
-	// 		innerLoop.push_back(buffedge);
-	// 	}
-	// 	reducedLoops[itbl->first] = innerLoop;	//new reduced map
-	// }	
-
-	vloop.insert(std::pair<int, higherOrder>(birthTimethisLoop, thisLoop));
-	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
-		if(itbl->first > birthTimethisLoop)
-			continue;
-		ListNodePtr inter = AddBoundary(itbl->second, vPointMap, domain_complex);
-		if(inter==NULL)
+	simplex = domain_complex.find(simplex_vertices.at(0));	//get one edge
+	ListNodePtr p = domain_complex.find_annotation(simplex);
+	ListNodePtr sum = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
+	int dead_bit = -1;
+	// simplex.clear();
+	for(int i=1;i<simplex_vertices.size();i++){
+	// SimplicialTreeNode_ptr simplex ;
+	simplex = domain_complex.find(simplex_vertices.at(i));	//get one edge
+	ListNodePtr tempLNP = domain_complex.annotations[sizes]->DeepCopyAnnotationColumn(domain_complex.find_annotation(simplex));
+	dead_bit = domain_complex.annotations[sizes]->sum_two_annotation_with_changed_dst(sum, tempLNP);
+	}
+	int num=0;
+	ListNodePtr trav(sum->next);
+	while (trav != sum) {
+		num += pow(2,(trav->row));
+		// cout<<"row: "<<trav->row<<" ";
+	if(trav->next==sum)
 		{
-			std::cout<<"Cycle dead. This should be alive "<<itbl->first<<"\n";
-			getchar();
+			// cout<<"\n num: "<<num; 
+			return num;
+		}
+		trav = trav->next;
+	}
+	return -1;
+	
+}
+
+void CheckBoundaryBirthOfLoops(std::map<int, higherOrder> birthOfLoops){
+	std::map<int, higherOrder>::iterator itbl;
+	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
+		ListNodePtr inter = AddBoundary(itbl->second);
+		if(inter->next==inter){
+			std::cout<<"Cycle in original complex shouldn't have died here."<<itbl->first<<"\n";
 			higherOrder buff = itbl->second;
 			for(int ind=0;ind<buff.size();ind++){
-				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"|";
-				int one = domain_complex.findRoot(buff[ind][0]);
-				int two = domain_complex.findRoot(buff[ind][1]);
-				cout<<one<<","<<two<<"|(";
-				int bg=buff[ind][0];
-				while(bg!=vPointMap[bg])
-					bg = vPointMap[bg];
-				cout<<bg<<",";
-
-				bg=buff[ind][1];
-				while(bg!=vPointMap[bg])
-					bg = vPointMap[bg];
-				cout<<bg<<")<-->";
+				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"<->";
 			}
 			exit(0);
 		}
+	}
 
+}
+//takes the loop, if its annotation is zero, it has dies. if not, then a combination has dies. Find which combination is dead.
+std::map<int,higherOrder> deathTracker(higherOrder thisLoop, int birthTimethisLoop, std::map<int, higherOrder> birthOfLoops){
+
+	std::vector<ListNodePtr> listofLoops;
+	std::map<int, higherOrder>::iterator itbl;
+	std::map<int, higherOrder> vloop;
+	int sizes = 1;
+	int dead_bit = 0;
+	// exit(0);
+	// cout<<"got here1";
+	// getchar();
+	ListNodePtr newloop = AddBoundary(thisLoop);
+		// cout<<"got here2";
+	// getchar();
+	if(newloop->next==newloop){
+			// std::cout<<"Cycle dead. No combination required"<<"\n";
+			vloop.insert(std::pair<int, higherOrder>(birthTimethisLoop, thisLoop));
+			return vloop;
+		}
+	vloop.insert(std::pair<int, higherOrder>(birthTimethisLoop, thisLoop));
+	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
+		ListNodePtr inter = AddBoundary(itbl->second);
 		if(inter->next==inter){
 			// simp_weight.erase(itsw); 
-			std::cout<<"Cycle Single. "<<itbl->first<<","<<inter->row<<"\n";
+			// std::cout<<"Cycle dead. This should be alive"<<itbl->first<<"\n";
 			higherOrder buff = itbl->second;
 			for(int ind=0;ind<buff.size();ind++){
-				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"|";
-				int one = domain_complex.findRoot(buff[ind][0]);
-				int two = domain_complex.findRoot(buff[ind][1]);
-				cout<<one<<","<<two<<"|(";
-				int bg=buff[ind][0];
-				while(bg!=vPointMap[bg])
-					bg = vPointMap[bg];
-				cout<<bg<<",";
-
-				bg=buff[ind][1];
-				while(bg!=vPointMap[bg])
-					bg = vPointMap[bg];
-				cout<<bg<<")<-->";
+				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"<->";
 			}
-			// exit(0);
-			getchar();
-			// continue;
+			exit(0);
 		}
 		
 		if(LowReturner(newloop)==LowReturner(inter)){
@@ -480,172 +342,171 @@ std::map<int,higherOrder> deathTracker(higherOrder thisLoop,  int birthTimethisL
 			dead_bit = domain_complex.annotations[sizes ]->sum_two_annotation_with_changed_dst(newloop, inter);
 		}
 		if(dead_bit == -1){	// this is the combination which got killed				
-			cout<<"comb which got killed";
 			return vloop;
 		}
 
 	}
-	cout<<"No combination of loops are dead. Error!";
+	// cout<<"No combination of loops are dead. Error!";
 	// exit(0);
 	return vloop;
 
 }
 // Takes in the current loop and set containing all loops and sees if this current one is independant, if so then this was born
-// bool bornTracker(higherOrder thisLoop, std::map<int, higherOrder> birthOfLoops){
-// 	// Convert loops in complex to simpers data structure
-// 	std::vector<ListNodePtr> listofLoops;
-// 	std::map<int, higherOrder>::iterator itbl;
-// 	int countitr = 0;
-// 	int sizes = 1;
+bool bornTracker(higherOrder thisLoop, std::map<int, higherOrder> birthOfLoops){
+	// Convert loops in complex to simpers data structure
+	std::vector<ListNodePtr> listofLoops;
+	std::map<int, higherOrder>::iterator itbl;
+	int countitr = 0;
+	int sizes = 1;
 
-// 	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
-// 		ListNodePtr inter = AddBoundary(itbl->second);
-// 		if(inter->next==inter){
-// 			// simp_weight.erase(itsw); 
-// 			std::cout<<"Cycle in original complex shouldn't have died here."<<itbl->first<<"\n";
-// 			higherOrder buff = itbl->second;
-// 			for(int ind=0;ind<buff.size();ind++){
-// 				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"<->";
-// 			}
-// 			exit(0);			
-// 		}
+	for(itbl = birthOfLoops.begin(); itbl != birthOfLoops.end(); itbl++){
+		ListNodePtr inter = AddBoundary(itbl->second);
+		if(inter->next==inter){
+			// simp_weight.erase(itsw); 
+			std::cout<<"Cycle in original complex shouldn't have died here."<<itbl->first<<"\n";
+			higherOrder buff = itbl->second;
+			for(int ind=0;ind<buff.size();ind++){
+				cout<<buff[ind][0]<<" "<<buff[ind][1]<<"<->";
+			}
+			exit(0);			
+		}
 
-// 		listofLoops.push_back(inter);
-// 		countitr++;
-// 	}
-// 	ListNodePtr newloop = AddBoundary(thisLoop);
-// 	// cout<<"This is the problem";
-// 						// getchar();
+		listofLoops.push_back(inter);
+		countitr++;
+	}
+	ListNodePtr newloop = AddBoundary(thisLoop);
+	// cout<<"This is the problem";
+						// getchar();
 
-// 	// Go through each loop check independance with this one to see if it is linearly independant
-// 	for(int itl=0;itl<listofLoops.size();itl++){
-// 		int proxydeadbit = domain_complex.annotations[sizes]->sum_two_annotation_with_changed_dst(listofLoops[itl], newloop);
-// 		if(proxydeadbit==-1)
-// 			return false;
-// 			// {						cout<<"no it aint";
-// 						// getchar();return false;}
-// 	}
-// 							// cout<<"no it aint";
-// 						// getchar();
-// 	return true;
+	// Go through each loop check independance with this one to see if it is linearly independant
+	for(int itl=0;itl<listofLoops.size();itl++){
+		int proxydeadbit = domain_complex.annotations[sizes]->sum_two_annotation_with_changed_dst(listofLoops[itl], newloop);
+		if(proxydeadbit==-1)
+			return false;
+			// {						cout<<"no it aint";
+						// getchar();return false;}
+	}
+							// cout<<"no it aint";
+						// getchar();
+	return true;
 
-// }
-
-
-// int independantCycleCalculate(std::multimap<float, higherOrder> &simp_weight){
-
-// 	std::vector<ListNodePtr> listofLoops;
-// 	std::vector<ListNodePtr> aliveLoops;
-// 	std::vector<int> aliveLoopsIndex;
-// 	std::vector<int> deadLoopsIndex;
-// 	bool nullflag = true;
-// 	int countitr = 0;
-// 	std::multimap<float, higherOrder>::iterator itsw;
-
-// 	for(itsw = simp_weight.begin(); itsw != simp_weight.end(); itsw++){
-// 		ListNodePtr inter = AddBoundary(itsw->second);
-// 		if(inter->next==inter){
-// 			std::cout<<"Cycle dead poor soul.\n";
-// 			return countitr;
-// 		}
-
-// 		listofLoops.push_back(inter);
-// 		countitr++;
-// 	}
+}
 
 
-// 	int dead_bit;
-// 	int sizes = 2;
-// 	itsw = simp_weight.begin();
-// 	bool dead = false;
-// 	int itl;
-// 	for(itl=0;itl<listofLoops.size();itl++){	// go through all loops in the basis
-// 		// std::cout<<"Loop "<<(itl)<<" :";
-// 		dead = false;
-// 		int alivesize = aliveLoops.size();
-// 		for(int ita=alivesize-1; ita>=0;--ita){ //all previous, loops already alive, in matrix, check current
-// 			if(LowReturner(aliveLoops[ita])==LowReturner(listofLoops[itl]))// if low is same, add with previous
-// 				dead_bit = domain_complex.annotations[sizes ]->sum_two_annotation_with_changed_dst(listofLoops[itl], aliveLoops[ita]);
-// 			if(dead_bit == -1){	// not part of the basis class, know which one has died
-// 				deadLoopsIndex.push_back(itl);
-// 				std::cout<<"died poor soul. \n************CHECK this part*************\n";	
-// 				dead = true;
-// 				// simp_weight.erase(itsw); 
-// 				return (itl);
-// 			}
-// 		}
-// 		//std::cout<<"is alive\n";
-// 		if(dead == false)
-// 			{	aliveLoopsIndex.push_back(itl);}
-// 		else{
-// 				std::cout<<"Died poor soul. Error: should not have come here. \n";	
-// 				exit(0);
-// 			}
-// 			itsw++;
-// 	}
-// 	int returner = 0;
-// 	// cout<<"No cycle present";
-// 	if(dead == false)
-// 		return -1;
-// 	else
-// 		return itl;
-// }
+int independantCycleCalculate(std::multimap<float, higherOrder> &simp_weight){
+
+	std::vector<ListNodePtr> listofLoops;
+	std::vector<ListNodePtr> aliveLoops;
+	std::vector<int> aliveLoopsIndex;
+	std::vector<int> deadLoopsIndex;
+	bool nullflag = true;
+	int countitr = 0;
+	std::multimap<float, higherOrder>::iterator itsw;
+
+	for(itsw = simp_weight.begin(); itsw != simp_weight.end(); itsw++){
+		ListNodePtr inter = AddBoundary(itsw->second);
+		if(inter->next==inter){
+			std::cout<<"Cycle dead poor soul.\n";
+			return countitr;
+		}
+
+		listofLoops.push_back(inter);
+		countitr++;
+	}
 
 
-// int independantCycleCalculate2(std::map<float,int> weights, std::vector<std::vector<std::vector<int>>> higher_simplex){
-// 	// std::sort(weights.begin(),weights.end());
-// 	std::map<float, int> :: iterator itr;
-// 	// cout<<"cycle count:"<<higher_simplex.size();//<<"weights";
-// 	// for(itr = weights.begin(); itr != weights.end(); ++itr)
-// 	// 	cout<<"\nFirst: "<<itr->first<<" ,"<<itr->second<<"\n";
+	int dead_bit;
+	int sizes = 2;
+	itsw = simp_weight.begin();
+	bool dead = false;
+	int itl;
+	for(itl=0;itl<listofLoops.size();itl++){	// go through all loops in the basis
+		// std::cout<<"Loop "<<(itl)<<" :";
+		dead = false;
+		int alivesize = aliveLoops.size();
+		for(int ita=alivesize-1; ita>=0;--ita){ //all previous, loops already alive, in matrix, check current
+			if(LowReturner(aliveLoops[ita])==LowReturner(listofLoops[itl]))// if low is same, add with previous
+				dead_bit = domain_complex.annotations[sizes ]->sum_two_annotation_with_changed_dst(listofLoops[itl], aliveLoops[ita]);
+			if(dead_bit == -1){	// not part of the basis class, know which one has died
+				deadLoopsIndex.push_back(itl);
+				std::cout<<"died poor soul. \n************CHECK this part*************\n";	
+				dead = true;
+				// simp_weight.erase(itsw); 
+				return (itl);
+			}
+		}
+		//std::cout<<"is alive\n";
+		if(dead == false)
+			{	aliveLoopsIndex.push_back(itl);}
+		else{
+				std::cout<<"Died poor soul. Error: should not have come here. \n";	
+				exit(0);
+			}
+			itsw++;
+	}
+	int returner = 0;
+	// cout<<"No cycle present";
+	if(dead == false)
+		return -1;
+	else
+		return itl;
+}
 
 
-// 	std::vector<ListNodePtr> listofLoops;
-// 	std::vector<ListNodePtr> aliveLoops;
-// 	std::vector<int> aliveLoopsIndex;
-// 	std::vector<int> deadLoopsIndex;
-// 	bool nullflag = true;
-// 	int countitr = 0;
-// 	// cout<<"INDEP: higher_simp size:"<<higher_simplex.size()<<"weights:"<<weights.size()<<"\n";
-// 	for(itr = weights.begin(); itr != weights.end(); ++itr){
-// 		ListNodePtr inter = AddBoundary(higher_simplex[itr->second],vPointMap);
-// 		if(inter->next!=inter)
-// 			{std::cout<<"Cycle dead poor soul.\n"; return itr->second;}
-// 		listofLoops.push_back(inter);
-// 		countitr++;
-// 	}
-// 	// cout<<"loop size:"<<listofLoops.size()<<" ";
-// 	// if(nullflag == false ){
-// 	// 	std::cout<<"Cycle dead poor soul.\n";
-// 	// 	return itr;
-// 	// }
-// 	std::vector<ListNodePtr>::iterator itl;
-// 	int dead_bit;
-// 	int sizes = 2;
-// 	for(int itl=0;itl<listofLoops.size();itl++){	// go through all loops in the basis
-// 		std::cout<<"Loop "<<(itl)<<" :";
-// 		bool dead = false;
-// 		int alivesize = aliveLoops.size();
-// 		for(int ita=alivesize-1; ita>=0;--ita){ //all previous, loops already alive, in matrix, check current
-// 			if(LowReturner(aliveLoops[ita])==LowReturner(listofLoops[itl]))// if low is same, add with previous
-// 				dead_bit = domain_complex.annotations[sizes ]->sum_two_annotation_with_changed_dst(listofLoops[itl], aliveLoops[ita]);
-// 			if(dead_bit == -1){	// not part of the basis class, know which one has died
-// 				deadLoopsIndex.push_back(itl);
-// 				std::cout<<"died poor soul\n";	
-// 				dead = true;
-// 				return (itl);
-// 			}
-// 		}
-// 		if(dead == false)
-// 			{std::cout<<"is alive\n";	aliveLoopsIndex.push_back(itl);}
-// 		else
-// 			{std::cout<<"died poor soul\n";	return (itl+1);}
-// 	}
-// 	int returner = 0;
-// 	// cout<<returner<<"\n";
-// 	return returner;
+int independantCycleCalculate2(std::map<float,int> weights, std::vector<std::vector<std::vector<int>>> higher_simplex){
+	// std::sort(weights.begin(),weights.end());
+	std::map<float, int> :: iterator itr;
+	// cout<<"cycle count:"<<higher_simplex.size();//<<"weights";
+	// for(itr = weights.begin(); itr != weights.end(); ++itr)
+	// 	cout<<"\nFirst: "<<itr->first<<" ,"<<itr->second<<"\n";
 
-// }
+
+	std::vector<ListNodePtr> listofLoops;
+	std::vector<ListNodePtr> aliveLoops;
+	std::vector<int> aliveLoopsIndex;
+	std::vector<int> deadLoopsIndex;
+	bool nullflag = true;
+	int countitr = 0;
+	// cout<<"INDEP: higher_simp size:"<<higher_simplex.size()<<"weights:"<<weights.size()<<"\n";
+	for(itr = weights.begin(); itr != weights.end(); ++itr){
+		ListNodePtr inter = AddBoundary(higher_simplex[itr->second]);
+		if(inter->next!=inter)
+			{std::cout<<"Cycle dead poor soul.\n"; return itr->second;}
+		listofLoops.push_back(inter);
+		countitr++;
+	}
+	// cout<<"loop size:"<<listofLoops.size()<<" ";
+	// if(nullflag == false ){
+	// 	std::cout<<"Cycle dead poor soul.\n";
+	// 	return itr;
+	// }
+	std::vector<ListNodePtr>::iterator itl;
+	int dead_bit;
+	int sizes = 2;
+	for(int itl=0;itl<listofLoops.size();itl++){	// go through all loops in the basis
+		std::cout<<"Loop "<<(itl)<<" :";
+		bool dead = false;
+		int alivesize = aliveLoops.size();
+		for(int ita=alivesize-1; ita>=0;--ita){ //all previous, loops already alive, in matrix, check current
+			if(LowReturner(aliveLoops[ita])==LowReturner(listofLoops[itl]))// if low is same, add with previous
+				dead_bit = domain_complex.annotations[sizes ]->sum_two_annotation_with_changed_dst(listofLoops[itl], aliveLoops[ita]);
+			if(dead_bit == -1){	// not part of the basis class, know which one has died
+				deadLoopsIndex.push_back(itl);
+				std::cout<<"died poor soul\n";	
+				dead = true;
+				return (itl);
+			}
+		}
+		if(dead == false)
+			{std::cout<<"is alive\n";	aliveLoopsIndex.push_back(itl);}
+		else
+			{std::cout<<"died poor soul\n";	return (itl+1);}
+	}
+	int returner = 0;
+	// cout<<returner<<"\n";
+	return returner;
+
+}
 
 
 bool CheckBoundary (std::vector<std::vector<int>> simplex_vertices){

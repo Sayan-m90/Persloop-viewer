@@ -541,7 +541,6 @@ SimplicialTreeNode_ptr SimplicialTree<T>::find(vector<int> &simplex_vertices){
 	}
 	return pIter;
 }
-
 template<typename T>
 SimplicialTreeNode_ptr SimplicialTree<T>::insert_into_simplicial_tree(std::vector<int> &simplex_vertices) {
 	// preq:	1) simplex_vertices is sorted
