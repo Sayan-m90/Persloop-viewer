@@ -13,3 +13,9 @@ We suggest you generate barcodes using our previous software called simpers.(htt
 
 The file Persloop-viewer-script contains the matlab script which gives correspondence between barcodes and the 1-cycle.
 Meaning clicking on a barcode, you can see the corresponding barcode on the 3D off file or image.
+
+If you want to work on dimensions~=3, compile and run using the folder persloop-src-all-dim. It will generate off files for the output cycles, but since these points are in higher dimension, you wont be able to visualise unless you use t-SNE or MDS or other dimension reduction software. You can use the coordinates, however, for higher dimension analysis.
+
+
+The folder persloop-src contains source code,
+The folder PersLoop-Viewer-Script contains an interactive Matlab program to view the cycles by clicking on the intervals(3D only)
