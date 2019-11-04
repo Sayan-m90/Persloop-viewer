@@ -1,0 +1,37 @@
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// "Trackloop" for computing persistent 1-cycles
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+	To compile "Trackloop", you need to have the following libraries installed:
+
+		* Boost (www.boost.org) 
+
+	Packages are available for Ubuntu Linux.
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+// Compilation
+///////////////////////////////////////////////////////////////////////////////////////////////////
+This project uses CMake.
+	Preq: the Boost library is installed; 
+	Using CMake :
+		(1) Open the CMake-gui;
+		(2) Select the source code directory which contains the folder "src";
+		(3) Select the build binary directory which can be anywhere;
+			suggest building the binary in a separate folder 
+			such as a folder called "build" under the directory which contains "src";
+		(4) Press "Configure" to start configure; 
+			follow the steps and choose the desired system such as windows (x86 or amd64) and 
+			Ubuntu (x86 or amd64);
+		(5) Press "Generate" to generate the makefiles or compiler project files (such as Visual Studio project files) which depends on the configuration step;
+		(6) Build the software from the generated makefiles or compiler project files.
+	Remark: If build the software under Linux, please rename the "CMakeLists-Ubuntu.txt" to "CMakeLists.txt" for CMake.
+ 
+
+	For Windows compilation using Visual Studio:
+	1. Download the Boost header only library
+	2. Add its path to the existing project
+	3. Compile the project
+
+
