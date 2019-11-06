@@ -14,11 +14,11 @@ DESCRIPTION
 
 Our software PersLoop: Given a barcode file, and a filtration file from the raw input, generates the persistent 1-cycle for the barcodes.
 It implements Algorithm 3 of the following paper:
-	*****************************************************************************
-	Paper: T. K. Dey, T. Hao, S. Mandal
-		Persistent 1-Cycles: Definition, Computation, and Its Application
-	pg:123--136, Computational Topology in Image Context 2019, Springer International Publishing
-	*****************************************************************************
+*****************************************************************************
+Paper: T. K. Dey, T. Hao, S. Mandal
+"""Persistent 1-Cycles: Definition, Computation, and Its Application"""
+pg:123--136, Computational Topology in Image Context 2019, Springer International Publishing
+*****************************************************************************
     
 # Persloop-viewer
 PersLoop is used to generate persistent 1-Cycles  
