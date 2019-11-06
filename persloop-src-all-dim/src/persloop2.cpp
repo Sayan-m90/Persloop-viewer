@@ -181,7 +181,7 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         ff.getline(sLine, 256);
         if(strcmp(sLine,"")==0 || strlen(sLine)==0)
         return 0;
-        cout<<sLine<<",,,, "<<"\n";
+//         cout<<sLine<<",,,, "<<"\n";
         stringstream ss;
         ss.str(sLine);
         
@@ -192,7 +192,7 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         if(dim==2)
         return 0;
         born.push_back(fborn);
-        cout<<fborn<<"fb "<<fdead<<"|";
+//         cout<<fborn<<"fb "<<fdead<<"|";
         if(fdead == "inf")
         dead.push_back(-1);
         else
@@ -400,7 +400,7 @@ int main(int argc, char *argv[] )
         
     }
     cout<<"got points";
-    getchar();
+//     getchar();
     char sLine[256]="";
     ff.getline(sLine, 256);
     while (!ff.eof())
