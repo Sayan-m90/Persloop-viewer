@@ -1,3 +1,23 @@
+/*****************************************************************************/
+"Persloop" software for computing persistent 1-cycle
+/*****************************************************************************/
+
+"Persloop" software is developed by the Jyamiti research group headed by 
+Prof. Tamal K. Dey at the Department of Computer Science and Engineering 
+of The Ohio State University.
+
+The binaries are distributed for: Ubuntu Linux 64bit;
+
+=================================
+DESCRIPTION
+=================================
+
+Our software PersLoop: Given a barcode file, and a filtration file from the raw input, generates the persistent 1-cycle for the barcodes.
+It implements Algorithm 3 of the following paper:
+	* Paper: T. K. Dey, T. Hao, S. Mandal
+		Persistent 1-Cycles: Definition, Computation, and Its Application
+		(CTIC 2018)
+    
 # Persloop-viewer
 PersLoop is used to generate persistent 1-Cycles  
 We address the problem of computing these representative cycles, termed as persistent 1-cycles, for H1-persistent homology with Z2 coefficients. 
