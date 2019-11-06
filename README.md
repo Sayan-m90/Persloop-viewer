@@ -16,7 +16,7 @@ Our software PersLoop: Given a barcode file, and a filtration file from the raw 
 It implements Algorithm 3 of the following paper:
 *****************************************************************************
 Paper: T. K. Dey, T. Hao, S. Mandal
-"""Persistent 1-Cycles: Definition, Computation, and Its Application"""
+'''Persistent 1-Cycles: Definition, Computation, and Its Application'''
 pg:123--136, Computational Topology in Image Context 2019, Springer International Publishing
 *****************************************************************************
     
