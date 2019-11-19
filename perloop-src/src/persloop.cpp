@@ -165,7 +165,8 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         exit(0);
     }
 
-    int dim, fborn;
+    int dim;
+    std::string fborn;
     std::string fdead;
     int count=0;
     while(!ff.eof()){
@@ -184,7 +185,7 @@ int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string sim
         continue;
       if(dim==2)
         return 0;
-      born.push_back(fborn);
+      born.push_back(stoi(fborn));
       // cout<<fborn<<"fb "<<fdead<<"|";
       if(fdead == "inf")
         dead.push_back(-1);
