@@ -277,22 +277,19 @@ void loopPrintingm3( std::map<int,higherPoint> vloop_all, int dimension,std::str
         ofstream ofloop(file.c_str());
         ofloop<<"OFF"<<std::endl<<vloop.size()<<" "<<" 0 0\n";
         int count = 0;
+        vector<vector<float>> vv = {};
         for(int l2=0;l2<vloop.size();l2++){
-            for(int l3=0;l3<dimension;l3++){
-                ofloop<<vloop[l2][0][l3]<<" ";
+            if(find(vv.begin(),vv.end(),vloop[l2][0])==vv.end())
+                vv.push_back(vloop[l2][0]);
+            if(find(vv.begin(),vv.end(),vloop[l2][1])==vv.end())
+                vv.push_back(vloop[l2][1]);
+            
             }
+        for(auto iter: vv){
+            for(auto item:iter)
+                ofloop<<item<<" ";
             ofloop<<"\n";
-            for(int l3=0;l3<dimension;l3++){
-                ofloop<<vloop[l2][1][l3]<<" ";
-            }
-            ofloop<<"\n";
-            // ofloop<<"#######################################################\n";
         }
-        
-//        for(int ed=0;ed<vInd.size();ed++)
-//        {
-//            ofloop<<"4 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" "<<vInd[ed][3]<<" 1.0 1.0 0.0"<<std::endl;
-//        }
         
         ofloop.close();
         vInd.clear();
