@@ -28,3 +28,13 @@ add_executable( persloop
 	) 
 
 target_link_libraries( persloop ${Boost_LIBRARIES})
+
+add_executable( Simpers  
+	simp/Simpers.cpp 
+	simp/SimplexNode.h 
+	simp/SimplicialComplex.h
+	simp/SimplicialComplex.cpp
+	simp/UnionFindDeletion.cpp
+	simp/AnnotationMatrix.cpp ) 
+target_link_libraries( Simpers  ${Boost_LIBRARIES})
+
