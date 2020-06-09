@@ -22,7 +22,7 @@ software first generates the persistent 1-cycle for the barcodes
 USAGE
 =================================
 -------------------------------------------------------------------------------
-./persloop -s <barcode_filename> -f <filtration_filename> [-options]
+./persloop -n <#interval> -f <filtration_filename> [-options]
 -------------------------------------------------------------------------------
 
 SimBa Usage:
