@@ -25,8 +25,10 @@ This project uses CMake.
 			follow the steps and choose the desired system such as windows (x86 or amd64) and 
 			Ubuntu (x86 or amd64);
 		(5) Press "Generate" to generate the makefiles or compiler project files (such as Visual Studio project files) which depends on the configuration step;
-		(6) Build the software from the generated makefiles or compiler project files.
+		(6) Build the software from the generated makefiles or compiler project files. [ This can be done using make]
+		
 	Remark: If build the software under Linux, please rename the "CMakeLists-Ubuntu.txt" to "CMakeLists.txt" for CMake.
+	Note: The make generates two binaries: Simpers and persloop. persloop uses Simpers to calculate intervals so make sure it has appropriate permissions.
  
 
 	For Windows compilation using Visual Studio:
