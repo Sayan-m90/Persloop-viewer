@@ -45,7 +45,7 @@ char strLicense[] = "THIS SOFTWARE IS PROVIDED \"AS-IS\". THERE IS NO WARRANTY O
 
 
 
-bool ParseCommand(int argc, char** argv, std::string &simpers_file, std::string &filtration_file){
+bool ParseCommand(int argc, char** argv, int &bars, std::string &filtration_file){
 	try
 	{
 		/* Define the program options description
@@ -59,7 +59,7 @@ bool ParseCommand(int argc, char** argv, std::string &simpers_file, std::string 
 			//(",i", po::value<std::string>(&input_pointcloud_file)->default_value(""), "The file name for the initial point cloud")
 			//(",r", po::value<std::string>(&output_file)->default_value(""), "The file name containing killed output loop")
 //			(",b", po::value<int>(&barcodes)->default_value(20), "No of barcodes for OFF. ")
-			(",s", po::value<std::string>(&simpers_file)->default_value(""), "The file name containing simpers barcode")
+            (",n", po::value<int>(&bars)->default_value(10), "The number of top barcodes to generate 1-cycle")
         (",f", po::value<std::string>(&filtration_file)->default_value(""), "The file contains filtration and points after input");
 //        (",d", po::value<int>(&dimension)->default_value(3), "Dimension of point cloud");
 			
