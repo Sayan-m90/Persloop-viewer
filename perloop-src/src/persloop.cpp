@@ -31,7 +31,8 @@
 #include <unordered_set>
 #include <string>
 #include <sys/stat.h>
-
+#include <unistd.h>
+#include <sys/wait.h>
 #ifndef INFINITY
 #define INFINITY std::numeric_limits< double >::infinity()
 #endif // INFINITY
@@ -155,113 +156,82 @@ higherOrder modifylastloop(higherOrder lastLoop){
   
 }
 
-int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string simpers_file){
-
-  ifstream ff(simpers_file.c_str());
-    // cout<<"simpers part";
-    if( ff.good()==false)
-    {
-        cout<<"simpers file "<<simpers_file<<" does not exist.";
-        exit(0);
+void call_simpers(string filtration_file){
+    ifstream ff(filtration_file.c_str());
+    ofstream of("filtration.txt");
+    int noP,dimn,count=0;
+    char sLine[256]="";
+    ff.getline(sLine, 256);
+    stringstream ss;
+    ss.str(sLine);
+    ss>>dimn; ss>>noP;
+    
+    while(count<noP){
+        
+        char sLine[256]="";
+        ff.getline(sLine, 256);
+        of<<"i "<<count<<"\n# "<<count<<"\n";
+        count ++;
     }
+    while(!ff.eof()){
+        char sLine[256]="";
+        ff.getline(sLine, 256);
+        if(strcmp(sLine,"")==0||strlen(sLine)==0)
+            break;
+        of<<sLine<<"\n";
+        
+    }
+    
+    of.close();
+    ff.close();
+    int pid, status;
+    if (pid = fork()) {
+        waitpid(pid, &status, 0); // wait for the child to exit
+    }
+    else
+        execl("./Simpers", "./Simpers", "-m", "filtration.txt",   NULL);
+    
+}
 
-    int dim;
-    std::string fborn;
+int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, int bars){
+    
+    ifstream ff("pers");
+    
+    int dim, fborn;
     std::string fdead;
     int count=0;
+    
     while(!ff.eof()){
-    count ++;
-      char sLine[256]="";
-      ff.getline(sLine, 256);
-      if(sLine==""||strlen(sLine)==0)
-        return 0;
-      // cout<<sLine<<",,,, "<<"\n";
-      stringstream ss;
-      ss.str(sLine);
-      
-      ss >> dim;  ss>>fborn; ss>> fdead;
-      
-      if(dim==0)
-        continue;
-      if(dim==2)
-        return 0;
-      born.push_back(stoi(fborn));
-      // cout<<fborn<<"fb "<<fdead<<"|";
-      if(fdead == "inf")
-        dead.push_back(-1);
-      else
-          dead.push_back(stoi(fdead));
-
+        count ++;
+        char sLine[256]="";
+        ff.getline(sLine, 256);
+        if(strcmp(sLine,"")==0||strlen(sLine)==0)
+            return 0;
+        //         cout<<sLine<<",,,, "<<"\n";
+        stringstream ss;
+        ss.str(sLine);
+        
+        ss >> dim;  ss>>fborn; ss>> fdead;
+        
+        if(dim==0)
+            continue;
+        if(dim==2)
+            break;
+        born.push_back(fborn);
+        // cout<<fborn<<"fb "<<fdead<<"|";
+        if(fdead == "inf")
+            dead.push_back(-1);
+        else
+            dead.push_back(stoi(fdead));
+        
     }
-
+    int todel = born.size() - bars;
+    
+    born.erase(born.begin(), born.begin() + todel);
+    dead.erase(dead.begin(), dead.begin() + todel);
     return 0;
 }
 
-void loopPrintingSingle(std::map<int,higherPoint> vloopH, int birthtime, std::string filtration_file){
-  string  loops_folder;
-  loops_folder = filtration_file.substr(0,filtration_file.size()-4)+"loops/";
-  boost::filesystem::path dir(loops_folder.c_str());
-  // boost::filesystem::create_directory(dir);
-  // if(boost::filesystem::create_directory(dir)==false)
-    // {cout<<"No directory";  exit(0);}
-
-    std::vector<int> edge;
-    // int k =  vloopH.begin()->first;
-    higherOrder vInd;
-    int count = 0;
-    // higherPoint vloop = vloop.begin()->second;
-  // {
-    std::string file = loops_folder+std::to_string(birthtime)+".off";
-    cout<<"OFF folder:"<<file<<"\n";
-    ofstream ofloop(file.c_str());
-    int vertexcount = 0, edgecount = 0, edgecountfirst = 0, fi=0;
-
-  for(std::map<int,higherPoint>::iterator iter = vloopH.begin(); iter != vloopH.end(); ++iter)
-  {
-    higherPoint here = iter->second;
-
-    // printHigherPoint(here);
-    // cout<<"\n";
-    // vertexcount += (here.size()*4);    //size of an individual loop
-    edgecount += here.size();
-    // if(fi==0)
-      // edgecountfirst = here.size();   //first loop is of different color
-    // fi++;
-  }
-    
-  ofloop<<"OFF"<<std::endl<<(edgecount*4)<<" "<<edgecount<<" 0\n";    
-
-  for(std::map<int,higherPoint>::iterator iter = vloopH.begin(); iter != vloopH.end(); ++iter)
-  {
-    higherPoint vloop_local = iter->second;
-    for(int l2=0;l2<vloop_local.size();l2++){
-    ofloop<<vloop_local[l2][0][0]<<" "<<vloop_local[l2][0][1]<<" "<<vloop_local[l2][0][2]<<"\n";
-    ofloop<<vloop_local[l2][1][0]<<" "<<vloop_local[l2][1][1]<<" "<<vloop_local[l2][1][2]<<"\n";
-    ofloop<<vloop_local[l2][0][0]<<" "<<vloop_local[l2][0][1]<<" "<<vloop_local[l2][0][2]<<"\n";
-    ofloop<<vloop_local[l2][1][0]<<" "<<vloop_local[l2][1][1]<<" "<<vloop_local[l2][1][2]<<"\n";
-
-    edge.push_back(count++);
-    edge.push_back(count++);
-    edge.push_back(count++);
-    edge.push_back(count++);
-    vInd.push_back(edge);
-    edge.clear();
-    if(iter==vloopH.begin())  //first cycle that was born actually
-      fi++;
-
-    }
-  } 
-
-  for(int ed=0;ed<vInd.size();ed++)
-    {
-      if(ed<fi)//to make first cycle a different color
-        ofloop<<"4 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" "<<vInd[ed][3]<<" 1.0 1.0 0.0"<<std::endl;
-      else
-        ofloop<<"4 "<<vInd[ed][0]<<" "<<vInd[ed][1]<<" "<<vInd[ed][2]<<" "<<vInd[ed][3]<<" 1.0 1.0 0.0"<<std::endl;
-    }
-    ofloop.close();
-
-}
 
 void loopPrinting( std::map<int,higherPoint> vloop_all, std::string filtration_file){
 
@@ -315,12 +285,11 @@ void loopPrinting( std::map<int,higherPoint> vloop_all, std::string filtration_f
 
 int main(int argc, char *argv[] )
 {
-  int dimensions, noPoints, currentEdgeSize = 0, barcode_count = 0;
-
+  int dimensions, hbars, noPoints, currentEdgeSize = 0, barcode_count = 0;
 
   string filtration_file, simpers_file;
   
-  ParseCommand(argc, argv,  simpers_file, filtration_file);
+  ParseCommand(argc, argv,  hbars, filtration_file);
   
   string loops_folder = filtration_file.substr(0,filtration_file.size()-4)+"loops/";
   boost::filesystem::path dir(loops_folder.c_str());
@@ -347,7 +316,8 @@ int main(int argc, char *argv[] )
   int totinsCount = 0;
 // std::cout<<"IP";
 // getchar();
-  simpersPart(vborn,vdead,simpers_file);
+    call_simpers(filtration_file);
+    simpersPart(vborn,vdead,hbars);
 
   if(ff.good()==false)
     {
