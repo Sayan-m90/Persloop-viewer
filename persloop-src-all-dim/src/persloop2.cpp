@@ -36,6 +36,8 @@
 #include <numeric>
 #include <vector>
 #include <functional>
+#include <unistd.h>
+#include <sys/wait.h>
 #ifndef INFINITY
 #define INFINITY std::numeric_limits< double >::infinity()
 #endif // INFINITY
@@ -161,46 +163,79 @@ higherOrder modifylastloop(higherOrder lastLoop){
     
 }
 
-int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, std::string simpers_file){
+void call_simpers(string filtration_file){
+    ifstream ff(filtration_file.c_str());
+    ofstream of("filtration.txt");
+    int noP,dimn,count=0;
+    char sLine[256]="";
+    ff.getline(sLine, 256);
+    stringstream ss;
+    ss.str(sLine);
+    ss>>dimn; ss>>noP;
     
-    cout<<"entering simpers part";
-    ifstream ff(simpers_file.c_str());
-    // cout<<"simpers part";
-    if( ff.good()==false)
-    {
-        cout<<"simpers file "<<simpers_file<<" does not exist.";
-        exit(0);
+    while(count<noP){
+        
+        char sLine[256]="";
+        ff.getline(sLine, 256);
+        of<<"i "<<count<<"\n# "<<count<<"\n";
+        count ++;
+    }
+    while(!ff.eof()){
+        char sLine[256]="";
+        ff.getline(sLine, 256);
+        if(strcmp(sLine,"")==0||strlen(sLine)==0)
+            break;
+        of<<sLine<<"\n";
+        
     }
     
-    int dim;
-    std::string fborn;
+    of.close();
+    ff.close();
+    int pid, status;
+    if (pid = fork()) {
+        waitpid(pid, &status, 0); // wait for the child to exit
+    }
+    else
+        execl("./Simpers", "./Simpers", "-m", "filtration.txt",   NULL);
+    
+}
+
+int simpersPart(std::vector<int>  &born,std::vector<int>  &dead, int bars){
+    
+    ifstream ff("pers");
+    
+    int dim, fborn;
     std::string fdead;
     int count=0;
+    
     while(!ff.eof()){
         count ++;
         char sLine[256]="";
         ff.getline(sLine, 256);
-        if(strcmp(sLine,"")==0 || strlen(sLine)==0)
-        return 0;
-//         cout<<sLine<<",,,, "<<"\n";
+        if(strcmp(sLine,"")==0||strlen(sLine)==0)
+            return 0;
+        //         cout<<sLine<<",,,, "<<"\n";
         stringstream ss;
         ss.str(sLine);
         
         ss >> dim;  ss>>fborn; ss>> fdead;
         
         if(dim==0)
-        continue;
+            continue;
         if(dim==2)
-        return 0;
-        born.push_back(stoi(fborn));
-//         cout<<fborn<<"fb "<<fdead<<"|";
+            break;
+        born.push_back(fborn);
+        // cout<<fborn<<"fb "<<fdead<<"|";
         if(fdead == "inf")
-        dead.push_back(-1);
+            dead.push_back(-1);
         else
-        dead.push_back(stoi(fdead));
+            dead.push_back(stoi(fdead));
         
     }
-    cout<<"return from simpers part";
+    int todel = born.size() - bars;
+    
+    born.erase(born.begin(), born.begin() + todel);
+    dead.erase(dead.begin(), dead.begin() + todel);
     return 0;
 }
 
@@ -261,7 +296,7 @@ void loopPrintingm3( std::map<int,higherPoint> vloop_all, int dimension,std::str
     loops_folder = filtration_file.substr(0,filtration_file.size()-4)+"loops/";
     boost::filesystem::path dir(loops_folder.c_str());
     // boost::filesystem::create_directory(dir);
-    cout<<"OFF M3 inside, loop size: "<<vloop_all.size();
+//    cout<<"OFF M3 inside, loop size: "<<vloop_all.size();
     
     higherOrder vInd;
     
@@ -317,12 +352,12 @@ float my_distance(vector<float> a, vector<float> b){
 
 int main(int argc, char *argv[] )
 {
-    int dimensions, noPoints, currentEdgeSize = 0, barcode_count = 0;
+    int dimensions, hbars, noPoints, currentEdgeSize = 0, barcode_count = 0;
     
     
     string filtration_file, simpers_file;
     
-    ParseCommand(argc, argv, simpers_file, filtration_file);
+    ParseCommand(argc, argv, hbars, filtration_file);
 
     string loops_folder = filtration_file.substr(0,filtration_file.size()-4)+"loops/";
     boost::filesystem::path dir(loops_folder.c_str());
@@ -349,7 +384,8 @@ int main(int argc, char *argv[] )
     int totinsCount = 0;
     // std::cout<<"IP";
     // getchar();
-    simpersPart(vborn,vdead,simpers_file);
+    call_simpers(filtration_file);
+    simpersPart(vborn,vdead,hbars);
     
     if(ff.good()==false)
     {
